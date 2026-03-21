@@ -1,5 +1,7 @@
 package com.cops.controller;
 
+import com.cops.dto.LoginRequest;
+import com.cops.dto.RegisterRequest;
 import com.cops.entity.User;
 import com.cops.repository.UserRepository;
 import com.cops.service.UserService;
@@ -19,15 +21,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public User register(@RequestBody User user){
-        return userService.registerUser(user);
+    public User register(@RequestBody RegisterRequest request){
+        return userService.registerUser(request);
     }
 
     @PostMapping("/login")
-    public User login(
-            @RequestParam String email,
-            @RequestParam String password){
-        return userService.loginUser(email, password);
+    public User login(@RequestBody LoginRequest request){
+        return userService.loginUser(request);
     }
 
     @GetMapping("/all")

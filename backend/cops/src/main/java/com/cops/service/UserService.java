@@ -1,8 +1,9 @@
 package com.cops.service;
 
+import com.cops.dto.LoginRequest;
+import com.cops.dto.RegisterRequest;
 import com.cops.entity.User;
 import com.cops.repository.UserRepository;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,17 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(User user){
+    public User registerUser(RegisterRequest request){
 
-        if(userRepository.existsByEmail(user.getEmail())) {
+        if(userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setPassword(request.getPassword());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
 
         return userRepository.save(user);
     }
@@ -36,12 +43,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User loginUser(String email, String password) {
+    public User loginUser(LoginRequest request) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!user.getPassword().equals(password)) {
+        if (!user.getPassword().equals(request.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
