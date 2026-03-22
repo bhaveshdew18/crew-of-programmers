@@ -21,12 +21,12 @@ public class AttendanceController {
         return attendanceService.markAttendance(attendance);
     }
 
-    @GetMapping("/user/userId")
+    @GetMapping("/user/{userId}")
     public List<Attendance> getByUser(@PathVariable Long userId) {
         return attendanceService.getByUser(userId);
     }
 
-    @GetMapping("/class/classId")
+    @GetMapping("/class/{classId}")
     public List<Attendance> getByClassId(@PathVariable Long classId) {
         return attendanceService.getByClass(classId);
     }

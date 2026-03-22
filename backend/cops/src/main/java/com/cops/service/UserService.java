@@ -1,9 +1,11 @@
 package com.cops.service;
 
 import com.cops.dto.LoginRequest;
+import com.cops.dto.LoginResponse;
 import com.cops.dto.RegisterRequest;
 import com.cops.entity.User;
 import com.cops.repository.UserRepository;
+import com.cops.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Autowired
     private UserRepository userRepository;
@@ -43,15 +48,28 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User loginUser(LoginRequest request) {
+    public LoginResponse loginUser(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!user.getPassword()
+                .equals(request.getPassword())) {
+
             throw new RuntimeException("Invalid password");
         }
 
-        return user;
+        String token =
+                jwtUtil.generateToken(user.getEmail());
+
+        LoginResponse res = new LoginResponse();
+
+        res.setToken(token);
+        res.setEmail(user.getEmail());
+        res.setRole(user.getRole().name());
+
+        return res;
     }
 }

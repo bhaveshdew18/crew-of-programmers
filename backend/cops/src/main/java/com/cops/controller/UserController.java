@@ -1,6 +1,7 @@
 package com.cops.controller;
 
 import com.cops.dto.LoginRequest;
+import com.cops.dto.LoginResponse;
 import com.cops.dto.RegisterRequest;
 import com.cops.entity.User;
 import com.cops.repository.UserRepository;
@@ -26,7 +27,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody LoginRequest request){
+    public LoginResponse login(
+            @RequestBody LoginRequest request
+    ) {
         return userService.loginUser(request);
     }
 
