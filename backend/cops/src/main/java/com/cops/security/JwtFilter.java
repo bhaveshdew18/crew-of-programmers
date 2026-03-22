@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 @Component
 public class JwtFilter implements Filter {
@@ -46,6 +47,20 @@ public class JwtFilter implements Filter {
                 header.substring(7);
 
         try {
+
+            String role =
+                    jwtUtil.extractRole(token);
+
+            System.out.println(
+                    "Role: " + role
+            );
+
+            if (path.contains("/attendance")
+                    && role.equals("STUDENT")) {
+
+                throw new RuntimeException(
+                        "Not allowed");
+            }
 
             String email =
                     jwtUtil.extractEmail(token);

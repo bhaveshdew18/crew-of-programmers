@@ -12,10 +12,11 @@ public class JwtUtil {
     private final String SECRET = "cops-secret-key";
 
 
-    public String generateToken(String email) {
+    public String generateToken(String email, String role) {
 
         return JWT.create()
                 .withSubject(email)
+                .withClaim("role", role)
                 .withIssuedAt(new Date())
                 .withExpiresAt(
                         new Date(System.currentTimeMillis() + 86400000)
@@ -30,6 +31,14 @@ public class JwtUtil {
                 .build()
                 .verify(token)
                 .getSubject();
+    }
+
+    public String extractRole(String token) {
+
+        return JWT.require(Algorithm.HMAC256(SECRET))
+                .build()
+                .verify(token)
+                .getClaim("role").asString();
     }
 
 }
