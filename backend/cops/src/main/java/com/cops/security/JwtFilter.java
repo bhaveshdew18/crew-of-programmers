@@ -1,32 +1,28 @@
 package com.cops.security;
 
 import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 
 @Component
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @Override
-    public void doFilter(
-            ServletRequest request,
-            ServletResponse response,
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
             FilterChain chain
-    ) throws IOException, ServletException {
+    ) throws ServletException, IOException {
 
-        HttpServletRequest req =
-                (HttpServletRequest) request;
+        String path = request.getRequestURI();
 
-        String path = req.getRequestURI();
-
-        // allow login & register
         if (path.contains("/login") ||
                 path.contains("/register")) {
 
@@ -35,12 +31,13 @@ public class JwtFilter implements Filter {
         }
 
         String header =
-                req.getHeader("Authorization");
+                request.getHeader("Authorization");
 
         if (header == null ||
                 !header.startsWith("Bearer ")) {
 
-            throw new RuntimeException("No token");
+            response.setStatus(401);
+            return;
         }
 
         String token =
@@ -48,29 +45,19 @@ public class JwtFilter implements Filter {
 
         try {
 
-            String role =
-                    jwtUtil.extractRole(token);
-
-            System.out.println(
-                    "Role: " + role
-            );
-
-            if (path.contains("/attendance")
-                    && role.equals("STUDENT")) {
-
-                throw new RuntimeException(
-                        "Not allowed");
-            }
-
             String email =
                     jwtUtil.extractEmail(token);
 
-            System.out.println(
-                    "Valid token: " + email);
+            String role =
+                    jwtUtil.extractRole(token);
+
+            System.out.println(email);
+            System.out.println(role);
 
         } catch (Exception e) {
 
-            throw new RuntimeException("Invalid token");
+            response.setStatus(401);
+            return;
         }
 
         chain.doFilter(request, response);
