@@ -2,6 +2,7 @@ package com.cops.controller;
 
 import com.cops.entity.Attendance;
 import com.cops.repository.AttendanceRepository;
+import com.cops.response.ApiResponse;
 import com.cops.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,39 @@ public class AttendanceController {
     private AttendanceService attendanceService;
 
     @PostMapping("/mark")
-    public Attendance mark(@RequestBody Attendance attendance) {
-        return attendanceService.markAttendance(attendance);
+    public ApiResponse<Attendance> mark(
+            @RequestBody Attendance attendance
+    ) {
+
+        Attendance data =
+                attendanceService.markAttendance(attendance);
+
+        ApiResponse<Attendance> res =
+                new ApiResponse<>();
+
+        res.setSuccess(true);
+        res.setMessage("Attendance saved");
+        res.setData(data);
+
+        return res;
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Attendance> getByUser(@PathVariable Long userId) {
-        return attendanceService.getByUser(userId);
+    @GetMapping("/user/{id}")
+    public ApiResponse<List<Attendance>> getByUser(
+            @PathVariable Long id
+    ) {
+
+        List<Attendance> list =
+                attendanceService.getByUser(id);
+
+        ApiResponse<List<Attendance>> res =
+                new ApiResponse<>();
+
+        res.setSuccess(true);
+        res.setMessage("OK");
+        res.setData(list);
+
+        return res;
     }
 
     @GetMapping("/class/{classId}")

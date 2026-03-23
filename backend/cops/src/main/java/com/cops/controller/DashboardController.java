@@ -1,6 +1,7 @@
 package com.cops.controller;
 
 import com.cops.dto.DashboardResponse;
+import com.cops.response.ApiResponse;
 import com.cops.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,18 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("/stats")
-    public DashboardResponse getStats() {
-        return dashboardService.getStats();
+    public ApiResponse<DashboardResponse> getStats() {
+
+        DashboardResponse stats =
+                dashboardService.getStats();
+
+        ApiResponse<DashboardResponse> res =
+                new ApiResponse<>();
+
+        res.setSuccess(true);
+        res.setMessage("OK");
+        res.setData(stats);
+
+        return res;
     }
 }

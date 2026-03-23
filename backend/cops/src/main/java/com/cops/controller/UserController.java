@@ -5,6 +5,7 @@ import com.cops.dto.LoginResponse;
 import com.cops.dto.RegisterRequest;
 import com.cops.entity.User;
 import com.cops.repository.UserRepository;
+import com.cops.response.ApiResponse;
 import com.cops.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +23,39 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request){
-        return userService.registerUser(request);
+    public ApiResponse<User> register(
+            @RequestBody RegisterRequest request
+    ) {
+
+        User user =
+                userService.registerUser(request);
+
+        ApiResponse<User> res =
+                new ApiResponse<>();
+
+        res.setSuccess(true);
+        res.setMessage("User created");
+        res.setData(user);
+
+        return res;
     }
 
     @PostMapping("/login")
-    public LoginResponse login(
+    public ApiResponse<LoginResponse> login(
             @RequestBody LoginRequest request
     ) {
-        return userService.loginUser(request);
+
+        LoginResponse data =
+                userService.loginUser(request);
+
+        ApiResponse<LoginResponse> res =
+                new ApiResponse<>();
+
+        res.setSuccess(true);
+        res.setMessage("Login success");
+        res.setData(data);
+
+        return res;
     }
 
     @GetMapping("/all")
