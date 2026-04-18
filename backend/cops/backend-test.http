@@ -1,0 +1,159 @@
+### =========================
+### REGISTER ADMIN
+### =========================
+
+POST http://localhost:8081/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "1234",
+  "role": "ADMIN"
+}
+
+
+### =========================
+### REGISTER TEACHER
+### =========================
+
+POST http://localhost:8081/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Teacher One",
+  "email": "teacher1@gmail.com",
+  "password": "1234",
+  "role": "TEACHER"
+}
+
+
+### =========================
+### REGISTER STUDENT 1
+### =========================
+
+POST http://localhost:8081/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Student One",
+  "email": "student1@gmail.com",
+  "password": "1234",
+  "role": "STUDENT"
+}
+
+
+### =========================
+### REGISTER STUDENT 2
+### =========================
+
+POST http://localhost:8081/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Student Two",
+  "email": "student2@gmail.com",
+  "password": "1234",
+  "role": "STUDENT"
+}
+
+
+### =========================
+### LOGIN TEACHER
+### COPY TOKEN FROM RESPONSE
+### =========================
+
+POST http://localhost:8081/api/users/login
+Content-Type: application/json
+
+{
+  "email": "teacher1@gmail.com",
+  "password": "1234"
+}
+
+
+### =========================
+### DASHBOARD (USE TOKEN)
+### =========================
+
+GET http://localhost:8081/api/dashboard/stats
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWFjaGVyMUBnbWFpbC5jb20iLCJyb2xlIjoiVEVBQ0hFUiIsImlhdCI6MTc3NDI4ODg0MiwiZXhwIjoxNzc0Mzc1MjQyfQ.HiRK6HFKG3eu350MNwS3S5PrIncx-VtM_6bTq8wkAtA
+
+
+### =========================
+### MARK ATTENDANCE (TEACHER ONLY)
+### =========================
+
+POST http://localhost:8081/api/attendance/mark
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWFjaGVyMUBnbWFpbC5jb20iLCJyb2xlIjoiVEVBQ0hFUiIsImlhdCI6MTc3NDI4ODg0MiwiZXhwIjoxNzc0Mzc1MjQyfQ.HiRK6HFKG3eu350MNwS3S5PrIncx-VtM_6bTq8wkAtA
+
+{
+  "userId": 3,
+  "classId": 1,
+  "status": "PRESENT"
+}
+
+
+### =========================
+### GET ATTENDANCE BY USER
+### =========================
+
+GET http://localhost:8081/api/attendance/user/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MUBnbWFpbC5jb20iLCJyb2xlIjoiU1RVREVOVCIsImlhdCI6MTc3NDI4OTIyNSwiZXhwIjoxNzc0Mzc1NjI1fQ.epk3xx7q-qm4ucQQE9FyBj2WmgbnH7eeyHEDVjPjwdc
+
+### =========================
+### GET ATTENDANCE BY CLASS
+### =========================
+
+GET http://localhost:8081/api/attendance/class/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWFjaGVyMUBnbWFpbC5jb20iLCJyb2xlIjoiVEVBQ0hFUiIsImlhdCI6MTc3NDI4ODg0MiwiZXhwIjoxNzc0Mzc1MjQyfQ.HiRK6HFKG3eu350MNwS3S5PrIncx-VtM_6bTq8wkAtA
+
+### =========================
+### GET ATTENDANCE BY DATE
+### =========================
+
+GET http://localhost:8081/api/attendance/date?date=2026-03-22
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWFjaGVyMUBnbWFpbC5jb20iLCJyb2xlIjoiVEVBQ0hFUiIsImlhdCI6MTc3NDI4ODg0MiwiZXhwIjoxNzc0Mzc1MjQyfQ.HiRK6HFKG3eu350MNwS3S5PrIncx-VtM_6bTq8wkAtA
+
+### =========================
+### TEST WITHOUT TOKEN (SHOULD FAIL)
+### =========================
+
+GET http://localhost:8081/api/dashboard/stats
+
+
+### =========================
+### TEST WITH WRONG TOKEN
+### =========================
+
+GET http://localhost:8081/api/dashboard/stats
+Authorization: Bearer 123456
+
+
+### =========================
+### LOGIN STUDENT
+### =========================
+
+POST http://localhost:8081/api/users/login
+Content-Type: application/json
+
+{
+  "email": "student1@gmail.com",
+  "password": "1234"
+}
+
+
+### =========================
+### STUDENT TRY MARK ATTENDANCE (SHOULD FAIL)
+### =========================
+
+POST http://localhost:8081/api/attendance/mark
+Content-Type: application/json
+Authorization: Bearer STUDENT_TOKEN
+
+{
+  "userId": 3,
+  "classId": 1,
+  "status": "PRESENT"
+}

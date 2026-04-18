@@ -3,10 +3,14 @@ package com.cops.security;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -37,6 +41,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 !header.startsWith("Bearer ")) {
 
             response.setStatus(401);
+            response.setContentType("application/json");
+
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"No token\"}"
+            );
+
             return;
         }
 
@@ -45,18 +55,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
 
-            String email =
-                    jwtUtil.extractEmail(token);
+            String email = jwtUtil.extractEmail(token);
+            String role = jwtUtil.extractRole(token);
 
-            String role =
-                    jwtUtil.extractRole(token);
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                    );
 
-            System.out.println(email);
-            System.out.println(role);
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(auth);
 
         } catch (Exception e) {
 
             response.setStatus(401);
+            response.setContentType("application/json");
+
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"Invalid token\"}"
+            );
+
             return;
         }
 

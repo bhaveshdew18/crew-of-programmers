@@ -67,7 +67,9 @@ public class UserService {
         LoginResponse res = new LoginResponse();
 
         res.setToken(token);
+        res.setUserId(user.getId());
         res.setEmail(user.getEmail());
+        res.setFullName(user.getName());
         res.setRole(user.getRole().name());
 
         return res;
